@@ -1,0 +1,2 @@
+export SOURCE_PATH=<put here source path for files>
+export DIST_PATH=<put here dist path for files>
