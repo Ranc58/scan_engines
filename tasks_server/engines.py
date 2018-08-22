@@ -6,7 +6,7 @@ import uuid
 from tasks_server.utils import check_dir_exist
 
 SOURCE_PATH = os.getenv('SOURCE_PATH', os.path.join(Path().absolute(), 'source'))
-DIST_PATH = os.getenv('DIST_PATH', os.path.join(Path().absolute(), 'results'))
+DIST_PATH = os.getenv('DIST_PATH', os.path.join(Path().absolute(), 'files_storage'))
 
 
 class BaseEngine:

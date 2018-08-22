@@ -14,7 +14,7 @@ def create_parser_for_user_arguments():
                         help='Select engines for scan')
     parser.add_argument('-f', '--files', nargs='*', required=True,
                         help='Select files for scan')
-    parser.add_argument('-c', '--clear', action='store_true',
+    parser.add_argument('-c', '--clear', action='store_false',
                         help='Delete files after check from service path')
     return parser.parse_args()
 

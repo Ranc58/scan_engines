@@ -1,8 +1,10 @@
 import json
 import uuid
+import os
 
 import pika
 
+HOST = os.getenv('RABBIT_HOST', 'localhost')
 
 class Client(object):
 
@@ -10,7 +12,7 @@ class Client(object):
         self.response = None
         self.corr_id = str(uuid.uuid4())
         self.connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host='localhost')
+            pika.ConnectionParameters(host=HOST)
         )
         self.channel = self.connection.channel()
         result = self.channel.queue_declare(exclusive=True, durable=True)
@@ -27,7 +29,7 @@ class Client(object):
 
     def call(self, data_for_call):
         self.channel.basic_publish(exchange='',
-                                   routing_key='worker_queue',
+                                   routing_key='scan_queue',
                                    properties=pika.BasicProperties(
                                        reply_to=self.callback_queue,
                                        correlation_id=self.corr_id,

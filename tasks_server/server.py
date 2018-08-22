@@ -1,7 +1,12 @@
 import multiprocessing
-import pika
+import os
 import json
+
+import pika
 from tasks_server import files_handler
+
+WORKERS_COUNT = os.getenv('WORKERS_COUNT', 5)
+HOST = os.getenv('RABBIT_HOST', 'localhost')
 
 
 class WorkerProcess(multiprocessing.Process):
@@ -12,7 +17,7 @@ class WorkerProcess(multiprocessing.Process):
 
     def run(self):
         connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host='localhost')
+            pika.ConnectionParameters(host=HOST)
         )
         channel = connection.channel()
         channel.queue_declare(
@@ -21,7 +26,7 @@ class WorkerProcess(multiprocessing.Process):
             durable=True
         )
         channel.basic_qos(prefetch_count=1)
-        channel.basic_consume(self.callback, queue='worker_queue')
+        channel.basic_consume(self.callback, queue='scan_queue')
         channel.start_consuming()
 
     def callback(self, channel, method, properties, body):
@@ -49,7 +54,7 @@ class WorkerProcess(multiprocessing.Process):
         channel.basic_ack(delivery_tag=method.delivery_tag)
 
 
-def start_workers(num=5): #TODO make choice for workers
+def start_workers(num):
     for i in range(num):
         process = WorkerProcess()
         process.start()
@@ -57,4 +62,4 @@ def start_workers(num=5): #TODO make choice for workers
 
 if __name__ == '__main__':
     print(" [x] Awaiting RPC requests")
-    start_workers()
+    start_workers(num=WORKERS_COUNT)

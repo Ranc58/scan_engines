@@ -1,2 +1,4 @@
-export SOURCE_PATH=<put here source path for files>
-export DIST_PATH=<put here dist path for files>
+export SOURCE_PATH=
+export DIST_PATH=
+export WORKERS_COUNT=
+export RABBIT_HOST=
