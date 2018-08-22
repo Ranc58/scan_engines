@@ -21,7 +21,7 @@ class WorkerProcess(multiprocessing.Process):
         )
         channel = connection.channel()
         channel.queue_declare(
-            queue='worker_queue',
+            queue='scan_queue',
             auto_delete=False,
             durable=True
         )
