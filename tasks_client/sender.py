@@ -2,6 +2,7 @@ import argparse
 import json
 import os
 from datetime import date
+import logging
 
 from client import Client
 
@@ -21,7 +22,6 @@ def create_parser_for_user_arguments():
 
 def send_task(*args, **kwargs):
     client = Client()
-    print("[x] Requesting engines {}".format(engines))
     data_for_call = {
         'engines': kwargs['engines'],
         'remove_after_check': kwargs['remove'],

@@ -1,3 +1,4 @@
+import logging
 import multiprocessing
 import os
 import json
@@ -51,6 +52,7 @@ class WorkerProcess(multiprocessing.Process):
                                   delivery_mode=2,
                               ),
                               body=json.dumps(results))
+        logging.info(' [.] Processed {}'.format(', '.join(engines)))
         channel.basic_ack(delivery_tag=method.delivery_tag)
 
 
@@ -61,5 +63,7 @@ def start_workers(num):
 
 
 if __name__ == '__main__':
+    logging.getLogger("pika").propagate = False
+    logging.basicConfig(format='%(message)s', level=logging.INFO)
     print(" [x] Awaiting RPC requests")
     start_workers(num=WORKERS_COUNT)

@@ -6,7 +6,8 @@ import pika
 
 HOST = os.getenv('RABBIT_HOST', 'localhost')
 
-class Client(object):
+
+class Client:
 
     def __init__(self):
         self.response = None
