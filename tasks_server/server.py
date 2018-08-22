@@ -3,7 +3,7 @@ import os
 import json
 
 import pika
-from tasks_server import files_handler
+import files_handler
 
 WORKERS_COUNT = os.getenv('WORKERS_COUNT', 5)
 HOST = os.getenv('RABBIT_HOST', 'localhost')
