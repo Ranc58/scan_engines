@@ -17,7 +17,7 @@ class BaseEngine:
         self.source_path = SOURCE_PATH
         self.dist_path = DIST_PATH
 
-    def scan(self, result_template=None):
+    def scan(self, result_template="{filename}-{result}"):
         copied = self._copy_files()
         if copied and copied.get('error'):
             return copied
