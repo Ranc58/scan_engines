@@ -4,16 +4,15 @@ import os
 
 import pika
 
-HOST = os.getenv('RABBIT_HOST', 'localhost')
-
 
 class Client:
 
-    def __init__(self):
+    def __init__(self, host):
         self.response = None
+        self.host = host
         self.corr_id = str(uuid.uuid4())
         self.connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host=HOST)
+            pika.ConnectionParameters(host=self.host)
         )
         self.channel = self.connection.channel()
         result = self.channel.queue_declare(exclusive=True, durable=True)

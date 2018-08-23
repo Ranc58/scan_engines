@@ -11,26 +11,24 @@ Scan engines server + client. Based on RabbitMQ.
   Venv setup example: \
   `python3 -m venv myenv`\
   `source myenv/bin/activate`
-- If it need - setup server's `env` file in `tasks_server`. By default workers count for server=5,
-  source path is `<parent dir for server>/source`, dist path `<parent dir for server>/files_storage`, 
-  rabbit host is localhost(for server and client too)\
-  env file description:
-  - `SOURCE_PATH` - path, from which server getting files for scan.
-  - `DIST_PATH` - path, where the server will place the downloaded files.
-  - `WORKERS_COUNT` - workers count for server.
-  - `RABBIT_HOST` - host for RabbitMQ. 
-  
-  **If you want run server and client on different hosts - please make `export RABBIT_HOST=<rabbit host>` on client side!** \
-  If you configured `env` file - `source env` from `tasks_server`.
-  For current time server support only local source storage for files.
 - `pip3 install -r requirements.txt`
 
     
 # How to use (Local example)
 
 - Run RabbitMQ (if you use docker `docker-compose up`)
-- Run Server `python3 tasks_server/server.py`
-- Put files for check in `SOURCE_PATH`
+- Server support argparse. Arguments: 
+   - `-s` or `--source` - Path from which server getting files for scan. Non required. Default value `<parent dir for server>/source` \
+   Example `-s /Users/user/scan/source_for_scan/`
+   - `-d` or `--dist` - Path where the server will place the downloaded files. Non required. If path not exists - server will create it. Default value `<parent dir for server>/files_storage`. \
+   Example `-d /Users/user/scan/storage/`
+   - `-w` or `--workers` - Workers count for server. Non required. Default value `5`. \
+   Example `-w 3`. 
+   - `-r` or `--rabbit` - Set host for RabbitMQ. Non Required. Default value `localhost`.
+   Example `-r 127.0.0.1`. \
+   For run with default settings `python3 tasks_server/server.py`\
+   Full example with all args:\
+   `python3 tasks_server/server.py -s /Users/user/scan/source_for_scan/ -d /Users/user/scan/storage/ -w 3 -r 127.0.0.1`
 - Client support argparse. Arguments:
    - `-f` or `--files` - Select files for scan. Required. Multiple files supported.\
    Example `-f test.txt file.py example.json`
@@ -39,6 +37,7 @@ Scan engines server + client. Based on RabbitMQ.
    - `-s` or `--save` - Set this arg if you need to save results in txt file. Pass here path to folder, where client can create files. File name format: `<ENGINE_NAME> <DATE>.txt`. Non required. \
    Example `-s /Users/user/scan/logs/`. 
    - `-c` or `--clear` - Delete files after check from service path. Default value - False. Non required. Example `-c`.\
+   - `-r` or `--rabbit` - Set host for RabbitMQ. Non Required. Default value `localhost`.
    Full example with all args:\
    `python3 tasks_client/sender.py -c -s /Users/user/logs/ -f example.json -e enginea engineC`
 

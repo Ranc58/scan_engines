@@ -16,11 +16,13 @@ def create_parser_for_user_arguments():
                         help='Select files for scan')
     parser.add_argument('-c', '--clear', action='store_true',
                         help='Delete files after check from service path')
+    parser.add_argument('-r', '--rabbit', nargs='?', required=False, default='localhost',
+                        type=str, help='host for RabbitMQ')
     return parser.parse_args()
 
 
 def send_task(*args, **kwargs):
-    task_client = Client()
+    task_client = Client(kwargs['host'])
     data_for_call = {
         'engines': kwargs['engines'],
         'remove_after_check': kwargs['remove'],
@@ -57,7 +59,8 @@ if __name__ == "__main__":
     response = send_task(
         engines=engines,
         files=files,
-        remove=remove_after_check
+        remove=remove_after_check,
+        host=user_argument.rabbit,
     )
     output_result(response)
     if user_argument.save:

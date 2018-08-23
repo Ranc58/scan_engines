@@ -17,6 +17,8 @@ class TestBaseEngine(TestCase):
         data = {
             'remove_after_check': True,
             'files_for_check': ['test.txt'],
+            'dist_path': os.path.join(self.tmpdir, 'sub'),
+            'source_path': self.tmpdir,
         }
         engine = engines.BaseEngine(**data)
         self.assertTrue(engine)
@@ -26,6 +28,8 @@ class TestBaseEngine(TestCase):
         data = {
             'remove_after_check': False,
             'files_for_check': ['test.txt'],
+            'dist_path': os.path.join(self.tmpdir, 'sub'),
+            'source_path': self.tmpdir,
         }
         engine = engines.BaseEngine(**data)
         with mock.patch.object(engines.BaseEngine, '_copy_files', return_value=[]):
@@ -40,6 +44,8 @@ class TestBaseEngine(TestCase):
         data = {
             'remove_after_check': False,
             'files_for_check': [file_name],
+            'dist_path': os.path.join(self.tmpdir, 'sub'),
+            'source_path': self.tmpdir,
         }
         engine = engines.BaseEngine(**data)
         engine.dist_path = dist_path
@@ -55,6 +61,8 @@ class TestBaseEngine(TestCase):
         data = {
             'remove_after_check': False,
             'files_for_check': [file_name],
+            'dist_path': os.path.join(self.tmpdir, 'sub'),
+            'source_path': self.tmpdir,
         }
         engine = engines.BaseEngine(**data)
         engine.dist_path = dist_path

@@ -28,6 +28,7 @@ class TestSender(TestCase):
                 'engines': ['enginea', 'engineb'],
                 'remove': True,
                 'files': ['test.json'],
+                'host': 'localhost',
             }
             response = sender.send_task(**data)
             self.assertEqual(response, 'response')

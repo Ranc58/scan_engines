@@ -11,12 +11,12 @@ class TestClient(TestCase):
 
     def test_init_client(self):
         with mock.patch.object(pika, 'BlockingConnection', return_value=self.mocked_pika):
-            test_client = Client()
+            test_client = Client(host='localhost')
             self.assertTrue(test_client)
 
     def test_on_response(self):
         with mock.patch.object(pika, 'BlockingConnection', return_value=self.mocked_pika):
-            test_client = Client()
+            test_client = Client(host='localhost')
             props = mock.Mock()
             props.correlation_id = test_client.corr_id
             test_client.on_response(None, None, props, 'test_body')
@@ -25,7 +25,7 @@ class TestClient(TestCase):
     def test_call(self):
         with mock.patch.object(pika, 'BlockingConnection', return_value=self.mocked_pika):
             with mock.patch.object(pika, 'BasicProperties', return_value=self.mocked_pika):
-                test_client = Client()
+                test_client = Client(host='localhost')
                 props = mock.Mock()
                 props.correlation_id = test_client.corr_id
                 test_client.response = b'test'

@@ -5,8 +5,8 @@ import uuid
 
 from utils import check_dir_exist
 
-SOURCE_PATH = os.getenv('SOURCE_PATH', os.path.join(Path().absolute(), 'source'))
-DIST_PATH = os.getenv('DIST_PATH', os.path.join(Path().absolute(), 'files_storage'))
+# SOURCE_PATH = os.getenv('SOURCE_PATH', os.path.join(Path().absolute(), 'source'))
+# DIST_PATH = os.getenv('DIST_PATH', os.path.join(Path().absolute(), 'files_storage'))
 
 
 class BaseEngine:
@@ -14,8 +14,8 @@ class BaseEngine:
     def __init__(self, *args, **kwargs):
         self.remove_after_check = kwargs['remove_after_check']
         self.files_for_check = kwargs['files_for_check']
-        self.source_path = SOURCE_PATH
-        self.dist_path = DIST_PATH
+        self.source_path = kwargs['source_path']
+        self.dist_path = kwargs['dist_path']
 
     def scan(self, result_template="{filename}-{result}"):
         copied = self._copy_files()
