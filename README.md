@@ -41,8 +41,7 @@ Scan engines server + client. Based on RabbitMQ.
    - `-c` or `--clear` - Delete files after check from service path. Default value - False. Non required. Example `-c`.\
    Full example with all args:\
    `python3 tasks_client/sender.py -c -s /Users/user/logs/ -f example.json -e enginea engineC`
-For tests run `./run_tests.sh`
- 
+
 Result example:
 ```
 - ENGINEA:
@@ -52,3 +51,6 @@ h2.py scanned. Result: 547243c4-2318-44c9-9d48-d80b809ddb7c
 {"h1.py": "baf9c930-de10-4f72-82e1-3e530e737a7f"}
 {"h2.py": "179987bb-34c3-4435-a30c-c1b1ff9decc3"}
 ```
+# Tests
+For tests run `./run_tests.sh`
+ 
