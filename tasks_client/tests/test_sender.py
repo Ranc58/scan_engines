@@ -8,6 +8,7 @@ import pika
 import pytest
 
 from client import Client
+import client
 import sender
 
 
@@ -19,7 +20,10 @@ class TestSender(TestCase):
         self.capsys = capsys
 
     def test_send_task(self):
-        with mock.patch.object(Client, 'call', return_value='response'):
+        mocked_2_client = mock.MagicMock()
+        mocked_2_client.call.return_value = 'response'
+        with mock.patch('sender.Client') as mocked_client:
+            mocked_client.return_value = mocked_2_client
             data = {
                 'engines': ['enginea', 'engineb'],
                 'remove': True,

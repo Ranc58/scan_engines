@@ -1,1 +1,3 @@
+-r test_requirements.txt
+
 pika==0.12.0
