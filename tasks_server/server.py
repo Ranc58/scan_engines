@@ -1,7 +1,6 @@
 import logging
 import multiprocessing
 import os
-from pathlib import Path
 import json
 import argparse
 
@@ -12,10 +11,10 @@ import files_handler
 def create_parser_for_user_arguments():
     parser = argparse.ArgumentParser(description='Start server.')
     parser.add_argument('-s', '--source', nargs='?', required=False,
-                        default=os.path.join(Path().absolute(), 'source'),
+                        default=os.path.join(os.path.abspath(os.getcwd()), 'source'),
                         type=str, help='Path from which server getting files for scan')
     parser.add_argument('-d', '--dist', nargs='?', required=False,
-                        default=os.path.join(Path().absolute(), 'files_storage'),
+                        default=os.path.join(os.path.abspath(os.getcwd()), 'files_storage'),
                         type=str, help='Path where the server will place the downloaded files')
     parser.add_argument('-w', '--workers', nargs='?', required=False, default=5,
                         type=int, help='workers count for server')
