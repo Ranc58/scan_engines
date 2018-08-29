@@ -1,0 +1,17 @@
+sudo: required
+
+services:
+  - rabbitmq
+
+language: python
+python:
+    - "3.6"
+
+notifications:
+  email: false
+
+install:
+  - pip3 install -r src/requirements.txt
+
+script:
+  - ./run_tests.sh
