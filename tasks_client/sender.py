@@ -1,9 +1,6 @@
 import argparse
-import json
-import os
-from datetime import date
 
-from client import Client
+from files_sender import Sender
 
 
 def create_parser_for_user_arguments():
@@ -18,37 +15,11 @@ def create_parser_for_user_arguments():
                         help='Delete files after check from service path')
     parser.add_argument('-r', '--rabbit', nargs='?', required=False, default='localhost',
                         type=str, help='host for RabbitMQ')
+    parser.add_argument('-t', '--timeout', nargs='?', required=False, default=30,
+                        type=int, help='timeout for awaiting answer from server')
+    parser.add_argument('-x', '--expiration', nargs='?', required=False, default=60,
+                        type=int, help='expiration time for message')
     return parser.parse_args()
-
-
-def send_task(*args, **kwargs):
-    task_client = Client(kwargs['host'])
-    data_for_call = {
-        'engines': kwargs['engines'],
-        'remove_after_check': kwargs['remove'],
-        'files_for_check': kwargs['files']
-    }
-    response = task_client.call(data_for_call)
-    return response
-
-
-def save_results_to_file(response, file_path):
-    file_str = '{} {}.txt'
-    current_date = date.today()
-    for k, v in response.items():
-        if v.get('error'):
-            continue
-        full_path = os.path.join(file_path, file_str.format(k, current_date))
-        with open(full_path, 'w') as f:
-            f.write(v['result'])
-
-
-def output_result(results):
-    for k, v in json.loads(results).items():
-        result = v.get('result')
-        if v.get('error'):
-            result = v.get('error')
-        print(f'- {k}:\n{result}')
 
 
 if __name__ == "__main__":
@@ -56,12 +27,11 @@ if __name__ == "__main__":
     engines = [engine.upper() for engine in user_argument.engines]
     files = user_argument.files
     remove_after_check = user_argument.clear
-    response = send_task(
-        engines=engines,
-        files=files,
-        remove=remove_after_check,
-        host=user_argument.rabbit,
-    )
-    output_result(response)
+    rabbit_host = user_argument.rabbit
+    timeout = user_argument.timeout
+    expiration = user_argument.expiration
+    sender = Sender(rabbit_host, timeout, expiration)
+    sender.send_tasks(engines, remove_after_check, files)
+    sender.output_result_to_cli()
     if user_argument.save:
-        save_results_to_file(json.loads(response), user_argument.save)
+        sender.save_results_to_file(user_argument.save)

@@ -36,10 +36,14 @@ Scan engines server + client. Based on RabbitMQ.
    Example `-e enginea EngineB engineC`
    - `-s` or `--save` - Set this arg if you need to save results in txt file. Pass here path to folder, where client can create files. File name format: `<ENGINE_NAME> <DATE>.txt`. Non required. \
    Example `-s /Users/user/scan/logs/`. 
-   - `-c` or `--clear` - Delete files after check from service path. Default value - False. Non required. Example `-c`.\
+   - `-t` or `--timeout` - Set timeout for awaiting answer from server. Default value - 30 sec. Non required.\ 
+   Example `-t 50`.
+   - `-x` or `--expired` - Set expiration time for RabbitMQ message. Default value - 60 sec. Non required.\ 
+   Example `-x 50`.
+   - `-c` or `--clear` - Delete files after check from service path. Default value - False. Non required.\ Example `-c`.\
    - `-r` or `--rabbit` - Set host for RabbitMQ. Non Required. Default value `localhost`.
    Full example with all args:\
-   `python3 tasks_client/sender.py -c -s /Users/user/logs/ -f example.json -e enginea engineC`
+   `python3 tasks_client/sender.py -c -s /Users/user/logs/ -f example.json -e enginea engineC -t 40 -x 50`
 
 Result example:
 ```

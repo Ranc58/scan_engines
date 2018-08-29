@@ -49,36 +49,29 @@ class WorkerProcess(multiprocessing.Process):
 
     def callback(self, channel, method, properties, body):
         obj = json.loads(body.decode('utf-8').replace("'", '"'))
-        engines = obj.pop('engines')
-        results = {}
-        for engine in engines:
-            scan_data = {
-                'engine': engine,
-                'dist_path': self.dist_path,
-                'source_path': self.source_path,
-                **obj
-            }
-            file_handler = files_handler.FileHandler(scan_data)
-            result = file_handler.get_info()
-            results.update({engine: {
-                'result': result.get('result'),
-                'error': result.get('error')}
-            })
+        scan_data = {
+            **obj,
+            'dist_path': self.dist_path,
+            'source_path': self.source_path,
+        }
+        file_handler = files_handler.FileHandler(scan_data)
+        result = file_handler.get_info()
         channel.basic_publish(exchange='',
                               routing_key=properties.reply_to,
                               properties=pika.BasicProperties(
                                   correlation_id=properties.correlation_id,
                                   delivery_mode=2,
                               ),
-                              body=json.dumps(results))
-        logging.info(' [.] Processed {}'.format(', '.join(engines)))
+                              body=json.dumps(result))
+        logging.info(' [.] Processed {}'.format(', '.join(obj['engines'])))
         channel.basic_ack(delivery_tag=method.delivery_tag)
 
 
 def start_workers(data):
+    process = WorkerProcess(**data)
+    process.start()
     for i in range(data['workers']):
-        process = WorkerProcess(**data)
-        process.start()
+        process.join()
 
 
 if __name__ == '__main__':
@@ -91,7 +84,11 @@ if __name__ == '__main__':
         'source_path': user_argument.source,
         'dist_path': user_argument.dist,
     }
-    logging.info(" [x] Awaiting requests.\n Workers count {}\n RabbitMQ host '{}'\n source path '{}'\n dist path '{}'".format(
+    logging.info(" [x] Awaiting requests.\n"
+                 " Workers count {}\n"
+                 " RabbitMQ host '{}'\n"
+                 " source path '{}'\n"
+                 " dist path '{}'".format(
         user_argument.workers,
         user_argument.rabbit,
         user_argument.source,

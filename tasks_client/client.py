@@ -7,10 +7,12 @@ import pika
 
 class Client:
 
-    def __init__(self, host):
+    def __init__(self, host, time_limit, expiration):
         self.response = None
         self.host = host
         self.corr_id = str(uuid.uuid4())
+        self.time_limit = time_limit
+        self.expiration = expiration
         self.connection = pika.BlockingConnection(
             pika.ConnectionParameters(host=self.host)
         )
@@ -34,10 +36,11 @@ class Client:
                                        reply_to=self.callback_queue,
                                        correlation_id=self.corr_id,
                                        delivery_mode=2,
+                                       expiration=str(self.expiration * 1000),
                                    ),
                                    body=json.dumps(data_for_call))
-        while self.response is None:
-            self.connection.process_data_events()
-        return str(self.response.decode('utf-8'))
-
-
+        self.connection.process_data_events(time_limit=10)
+        if self.response:
+            return json.loads(str(self.response.decode('utf-8')))
+        else:
+            return {'error': {'error': 'No connection to server'}}
