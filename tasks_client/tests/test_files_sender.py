@@ -35,21 +35,26 @@ class TestFilesSender(TestCase):
 
     def test_save_result_to_file(self):
         file_path = self.tmpdir
+        mocked_2_client = mock.Mock()
         dict_for_print = {'result': {'ENGINEA': 'ok'}}
-        sender = files_sender.Sender('localhost', 20, 60)
-        sender.results = dict_for_print
-        sender.save_results_to_file( file_path)
-        file_name = '{} {}.txt'.format('ENGINEA', date.today())
-        file_path = os.path.join(file_path, file_name)
-        expected_result = 'ok'
-        with open(file_path) as f:
-            result = f.read()
-            self.assertEqual(result, expected_result)
+        with mock.patch('files_sender.Client', return_value=mocked_2_client):
+            sender = files_sender.Sender('localhost', 20, 60)
+            sender.results = dict_for_print
+            sender.save_results_to_file( file_path)
+            file_name = '{} {}.txt'.format('ENGINEA', date.today())
+            file_path = os.path.join(file_path, file_name)
+            expected_result = 'ok'
+            with open(file_path) as f:
+                result = f.read()
+                self.assertEqual(result, expected_result)
 
     def test_output_result(self):
+        mocked_2_client = mock.Mock()
         dict_for_print = {'result': {'ENGINEA': 'ok'}}
-        sender = files_sender.Sender('localhost', 20, 60)
-        sender.results = dict_for_print
-        sender.output_result_to_cli()
-        captured = self.capsys.readouterr()
-        self.assertEqual(captured.out, "- ENGINEA:\nok\n")
+        mocked_2_client = mock.Mock()
+        with mock.patch('files_sender.Client', return_value=mocked_2_client):
+            sender = files_sender.Sender('localhost', 20, 60)
+            sender.results = dict_for_print
+            sender.output_result_to_cli()
+            captured = self.capsys.readouterr()
+            self.assertEqual(captured.out, "- ENGINEA:\nok\n")
