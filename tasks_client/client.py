@@ -42,4 +42,4 @@ class Client:
         if self.response:
             return json.loads(str(self.response.decode('utf-8')))
         else:
-            return {'error': {'error': 'No connection to server'}}
+            return {'errors': {'error': 'No connection to server'}}
